@@ -3,9 +3,39 @@
     "name": "chrome-jiaoanpu",
     "description": "chrome extension",
     "version": "0.0.1",
+	"icons": {
+		"16": "img/logo.png",
+		"32": "img/logo.png",
+		"48": "img/logo.png",
+		"128": "img/logo.png"
+	},
+    "background": {
+        "page": "background.html",
+        "persistent": true
+    },
     "options_page": "options.html",
     "browser_action": {
-        "default_popup": "popup.html"
+        "default_popup": "popup.html",
+        "default_title": "chrome-扩展-下载图片"
     },
-    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+    "permissions": [
+        "activeTab",
+        "contextMenus",
+        "notifications",
+        "downloads",
+        "webRequest",
+        "webRequestBlocking",
+        "tabs",
+        "storage",
+        "http://*/*",
+        "https://*/*"
+    ],
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["js/content.js"],
+            "run_at": "document_start"
+        }
+    ]
 }

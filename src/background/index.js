@@ -3,10 +3,11 @@ import AppComponent from "./App/App.vue";
 
 Vue.component("app-component", AppComponent);
 
-import { Card, Button } from 'element-ui';
+import { Row, Col, Card } from 'element-ui';
 
+Vue.use(Row);
+Vue.use(Col);
 Vue.use(Card);
-Vue.use(Button);
 
 new Vue({
   el: "#app",
