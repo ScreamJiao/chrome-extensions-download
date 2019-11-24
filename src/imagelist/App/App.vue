@@ -2,32 +2,52 @@
   <div>
     <el-row>
       <el-col :span="3" v-for="(img, index) in imgList" :key="index" :offset="1">
-        <el-card :body-style="{ padding: '0px' }" shadow="hover">
-          <img
-            :src="img.url"
-            class="image"
-            @click="downloadImage(img.url)"
-            @load="imageLoaded(img, $event)"
-          >
-          <div style="padding: 14px;">
-            <span>分辨率</span>
-            <div class="bottom clearfix">
-              <span>{{img.nWidth}} * {{img.nHeight}}</span>
-            </div>
-          </div>
-        </el-card>
+        <el-popover
+          placement="right"
+          width="400"
+          trigger="click">
+          <el-button type="success" plain @click="downloadImage(img.url)">下载</el-button>
+          <el-button type="success" plain @click="showQrCode(img.url)">手机查看</el-button>
+          <el-button slot="reference">
+            <el-card :body-style="{ padding: '0px' }" shadow="hover">
+              <img
+                :src="img.url"
+                class="image"
+                @load="imageLoaded(img, $event)"
+              >
+              <div style="padding: 14px;">
+                <span>分辨率</span>
+                <div class="bottom clearfix">
+                  <span>{{img.nWidth}} * {{img.nHeight}}</span>
+                </div>
+              </div>
+            </el-card>
+          </el-button>
+        </el-popover>
       </el-col>
     </el-row>
+    <el-dialog title="QR-Code" :visible.sync="dialogTableVisible">
+      <vue-qr :text="qrSrc" :size="200"></vue-qr>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+
+import VueQr from 'vue-qr'
+
 export default {
   name: "app",
   data() {
     return {
-      imgList: []
+      imgList: [],
+      qrSrc: "",
+      dialogTableVisible: false,
+      srcList: []
     };
+  },
+  components: {
+    VueQr
   },
   methods: {
     // 获取图片列表
@@ -85,6 +105,12 @@ export default {
         title: '安溥',
         message: '已添加到下载任务！'
       });
+    },
+
+    // 生成QR Code
+    showQrCode(url) {
+      this.qrSrc = url;
+      this.dialogTableVisible = true;
     },
 
     // web请求监听
