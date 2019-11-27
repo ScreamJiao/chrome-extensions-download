@@ -16,11 +16,11 @@ export default {
     openBackground() {
       chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
         var tabId = tabs.length ? tabs[0].id : null;
-        let message = {
-          tabId: tabId,
-          message: "popup发来的消息"
-        };
-        console.log(message);
+        // let message = {
+        //   tabId: tabId,
+        //   message: "popup发来的消息"
+        // };
+        // console.log(message);
         // window.open(chrome.extension.getURL("background.html"));
         chrome.tabs.create({url: 'imagelist.html?tabId='+tabId});
       });
