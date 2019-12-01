@@ -16,7 +16,16 @@
     "options_page": "options.html",
     "browser_action": {
         "default_popup": "popup.html",
-        "default_title": "chrome-扩展-下载图片"
+        "default_title": "chrome-extension-download-image"
+    },
+    "commands": {
+        "_execute_browser_action": {
+            "suggested_key": {
+            "default": "Ctrl+Shift+F",
+            "mac": "MacCtrl+Shift+F"
+            },
+            "description": "Opens popup.html"
+        }
     },
     "permissions": [
         "activeTab",

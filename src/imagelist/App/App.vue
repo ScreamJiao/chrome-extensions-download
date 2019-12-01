@@ -7,7 +7,7 @@
           <el-button type="success" plain @click="showQrCode(img.url)">扫码查看</el-button>
           <div slot="reference">
             <el-card :body-style="{ padding: '0px' }" shadow="hover">
-              <img :src="img.url" class="image" @load="imageLoaded(img, $event)">
+              <el-image :src="img.url" class="image" @load="imageLoaded(img, $event)"></el-image>
               <div style="padding: 14px;">
                 <span>分辨率</span>
                 <div class="bottom clearfix">
@@ -37,6 +37,7 @@ export default {
   name: "app",
   data() {
     return {
+      tabId: Number(window.location.href.split("=")[1]),
       imgList: [],
       qrSrc: "",
       dialogTableVisible: false,
@@ -49,12 +50,12 @@ export default {
   methods: {
     // 获取图片列表
     getImageList() {
-      let tabId = Number(window.location.href.split("=")[1]);
-      chrome.tabs.executeScript(tabId, { file: "main.js" }, results => {
+      chrome.tabs.executeScript(this.tabId, { file: "main.js" }, results => {
         if (results && results[0] && results[0].length) {
           this.imgList = results[0].filter(result => {
             return result;
           });
+          this.imgList = this.dedupe(this.imgList);
           this.imgList = this.imgList.map(img => {
             return { url: img };
           });
@@ -71,20 +72,21 @@ export default {
     },
 
     // 计算原始图片分辨率
-    getImgNaturalDimensions(img, callback) {
+    // getImgNaturalDimensions(img, callback) {
+    getImgNaturalDimensions(img) {
       let nWidth, nHeight;
-      if (img.naturalWidth) {
+      // if (img.naturalWidth) {
         // 现代浏览器
         nWidth = img.naturalWidth;
         nHeight = img.naturalHeight;
-      } else {
-        // IE6/7/8
-        let image = new Image();
-        image.src = img.src;
-        image.onload = function() {
-          callback(image.width, image.height);
-        };
-      }
+      // } else {
+      //   // IE6/7/8
+      //   let image = new Image();
+      //   image.src = img.src;
+      //   image.onload = function() {
+      //     callback(image.width, image.height);
+      //   };
+      // }
       return [nWidth, nHeight];
     },
 
@@ -125,14 +127,18 @@ export default {
             return img.url === details.url;
           });
 
-          if (!result) {
+          if (details.tabId === this.tabId && !result) {
             this.imgList.push({ url: details.url });
           }
         },
         ADD_CONFIG,
         ["blocking"]
       );
-    }
+    },
+
+    dedupe(array) {
+      return Array.from(new Set(array));
+    },
   },
   mounted() {
     this.getImageList();
