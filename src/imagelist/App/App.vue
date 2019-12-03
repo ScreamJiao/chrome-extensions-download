@@ -2,21 +2,20 @@
   <div>
     <el-row>
       <el-col :span="3" v-for="(img, index) in imgList" :key="index" :offset="1">
-        <el-popover placement="bottom" width="200" trigger="hover">
-          <el-button type="success" plain @click="downloadImage(img.url)">下载</el-button>
-          <el-button type="success" plain @click="showQrCode(img.url)">扫码查看</el-button>
-          <div slot="reference">
-            <el-card :body-style="{ padding: '0px' }" shadow="hover">
-              <el-image :src="img.url" class="image" @load="imageLoaded(img, $event)"></el-image>
-              <div style="padding: 14px;">
-                <span>分辨率</span>
-                <div class="bottom clearfix">
-                  <span>{{img.nWidth}} * {{img.nHeight}}</span>
-                </div>
-              </div>
-            </el-card>
-          </div>
-        </el-popover>
+        <!-- <el-popover placement="bottom" width="200" trigger="hover"> -->
+        <div>
+          <el-card :body-style="{ padding: '0px' }" shadow="hover">
+            <el-image :src="img.url" class="image" @load="imageLoaded(img, $event)"></el-image>
+            <div style="padding: 14px;">
+              <span>分辨率 {{img.nWidth}} * {{img.nHeight}}</span>
+            </div>
+            <div style="padding: 14px;">
+              <i class="el-icon-download" @click="downloadImage(img.url)"></i>
+              <i class="el-icon-s-grid" @click="showQrCode(img.url)"></i>
+            </div>
+          </el-card>
+        </div>
+        <!-- </el-popover> -->
       </el-col>
     </el-row>
     <el-dialog title="QR-Code" :visible.sync="dialogTableVisible" width="240px">
@@ -40,8 +39,7 @@ export default {
       tabId: Number(window.location.href.split("=")[1]),
       imgList: [],
       qrSrc: "",
-      dialogTableVisible: false,
-      srcList: []
+      dialogTableVisible: false
     };
   },
   components: {
@@ -76,9 +74,9 @@ export default {
     getImgNaturalDimensions(img) {
       let nWidth, nHeight;
       // if (img.naturalWidth) {
-        // 现代浏览器
-        nWidth = img.naturalWidth;
-        nHeight = img.naturalHeight;
+      // 现代浏览器
+      nWidth = img.naturalWidth;
+      nHeight = img.naturalHeight;
       // } else {
       //   // IE6/7/8
       //   let image = new Image();
@@ -138,7 +136,7 @@ export default {
 
     dedupe(array) {
       return Array.from(new Set(array));
-    },
+    }
   },
   mounted() {
     this.getImageList();
@@ -161,7 +159,6 @@ export default {
 .image {
   width: 100%;
   display: block;
-  cursor: pointer;
 }
 
 .clearfix:before,
@@ -176,5 +173,10 @@ export default {
 
 el-col {
   margin-top: 10px;
+}
+
+i {
+  font-size: 24px;
+  cursor: pointer;
 }
 </style>
